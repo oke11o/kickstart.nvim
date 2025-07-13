@@ -127,6 +127,45 @@ end)
 -- Enable break indent
 vim.o.breakindent = true
 
+-- Tab settings (default)
+vim.o.tabstop = 4      -- Tab width = 4 spaces
+vim.o.shiftwidth = 4   -- Indent width = 4 spaces
+vim.o.expandtab = true -- Use spaces instead of tabs
+vim.o.softtabstop = 4  -- Tab key inserts 4 spaces
+
+-- File-specific indentation
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = {
+    "javascript", "typescript", "jsx", "tsx", "json", "yaml", "html", "css", "scss"
+  },
+  callback = function()
+    vim.bo.tabstop = 2
+    vim.bo.shiftwidth = 2
+    vim.bo.softtabstop = 2
+    vim.bo.expandtab = true
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "go", "make" },
+  callback = function()
+    vim.bo.tabstop = 4
+    vim.bo.shiftwidth = 4
+    vim.bo.softtabstop = 4
+    vim.bo.expandtab = false  -- Use real tabs for Go and Makefiles
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "python" },
+  callback = function()
+    vim.bo.tabstop = 4
+    vim.bo.shiftwidth = 4
+    vim.bo.softtabstop = 4
+    vim.bo.expandtab = true
+  end,
+})
+
 -- Save undo history
 vim.o.undofile = true
 
