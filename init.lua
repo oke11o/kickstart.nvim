@@ -319,6 +319,11 @@ require('lazy').setup({
     },
     config = function()
       require('nvim-tree').setup {
+        filters = {
+          dotfiles = false,      -- Show hidden files (like .a directory)
+          git_ignored = false,   -- Show files/directories from .gitignore
+          custom = { ".git" },   -- Hide only .git directory
+        },
         renderer = {
           icons = {
             show = {
@@ -650,6 +655,45 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sn', function()
         builtin.find_files { cwd = vim.fn.stdpath 'config' }
       end, { desc = '[S]earch [N]eovim files' })
+
+      -- Search ALL files including hidden and .gitignore, but exclude common build/cache directories
+      -- This allows finding files in custom hidden dirs (like .a/) while avoiding noise from node_modules, etc.
+      vim.keymap.set('n', '<leader>sF', function()
+        builtin.find_files({ 
+          find_command = { 
+            'rg', 
+            '--files', 
+            '--hidden',
+            '--no-ignore',
+            '--glob', '!**/node_modules/**',
+            '--glob', '!**/.git/**',
+            '--glob', '!**/.idea/**',
+            '--glob', '!**/target/**',
+            '--glob', '!**/build/**',
+            '--glob', '!**/dist/**',
+            '--glob', '!**/.next/**',
+            '--glob', '!**/coverage/**'
+          }
+        })
+      end, { desc = '[S]earch ALL [F]iles (smart ignore)' })
+
+      -- Live grep with same smart ignore rules
+      vim.keymap.set('n', '<leader>sG', function()
+        builtin.live_grep({ 
+          additional_args = { 
+            '--hidden', 
+            '--no-ignore',
+            '--glob', '!**/node_modules/**',
+            '--glob', '!**/.git/**',
+            '--glob', '!**/.idea/**',
+            '--glob', '!**/target/**',
+            '--glob', '!**/build/**',
+            '--glob', '!**/dist/**',
+            '--glob', '!**/.next/**',
+            '--glob', '!**/coverage/**'
+          }
+        })
+      end, { desc = '[S]earch by [G]rep (smart ignore)' })
     end,
   },
 
