@@ -902,6 +902,13 @@ require('lazy').setup({
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
+        -- Formatters
+        'prettier', 'prettierd', -- JS/TS/JSON/HTML/CSS/YAML/Markdown
+        'black', 'isort', -- Python
+        'gofumpt', 'goimports', -- Go
+        'rustfmt', -- Rust
+        'clang-format', -- C/C++
+        'shfmt', -- Shell scripts
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -935,6 +942,14 @@ require('lazy').setup({
         mode = '',
         desc = '[F]ormat buffer',
       },
+      {
+        '<D-l>', -- Cmd+L на macOS
+        function()
+          require('conform').format { async = true, lsp_format = 'fallback' }
+        end,
+        mode = { 'n', 'v' },
+        desc = 'Format buffer (Cmd+L)',
+      },
     },
     opts = {
       notify_on_error = false,
@@ -954,11 +969,24 @@ require('lazy').setup({
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
-        -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
-        --
-        -- You can use 'stop_after_first' to run the first available formatter from the list
-        -- javascript = { "prettierd", "prettier", stop_after_first = true },
+        go = { 'gofumpt', 'goimports' },
+        python = { 'isort', 'black' },
+        javascript = { 'prettierd', 'prettier', stop_after_first = true },
+        typescript = { 'prettierd', 'prettier', stop_after_first = true },
+        javascriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+        typescriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+        json = { 'prettierd', 'prettier', stop_after_first = true },
+        html = { 'prettierd', 'prettier', stop_after_first = true },
+        css = { 'prettierd', 'prettier', stop_after_first = true },
+        scss = { 'prettierd', 'prettier', stop_after_first = true },
+        yaml = { 'prettierd', 'prettier', stop_after_first = true },
+        markdown = { 'prettierd', 'prettier', stop_after_first = true },
+        rust = { 'rustfmt' },
+        c = { 'clang-format' },
+        cpp = { 'clang-format' },
+        java = { 'google-java-format' },
+        php = { 'php_cs_fixer' },
+        sh = { 'shfmt' },
       },
     },
   },

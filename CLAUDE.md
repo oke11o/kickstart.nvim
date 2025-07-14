@@ -126,3 +126,7 @@ vim.keymap.set('n', '<leader>key', function_or_command, { desc = '[D]escription'
 ```
 
 This configuration prioritizes educational value and readability over modularity, making it ideal for understanding and incrementally customizing Neovim behavior.
+
+### Tmux Integration
+
+The user actively uses tmux alongside Neovim. When the user asks about tmux commands and confirms they work, add the successful commands to `/learn/tmux/quick_commands.md` for future reference. The user has a custom tmux configuration with `Ctrl-a` as prefix key.
