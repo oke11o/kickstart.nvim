@@ -128,15 +128,23 @@ end)
 vim.o.breakindent = true
 
 -- Tab settings (default)
-vim.o.tabstop = 4      -- Tab width = 4 spaces
-vim.o.shiftwidth = 4   -- Indent width = 4 spaces
+vim.o.tabstop = 4 -- Tab width = 4 spaces
+vim.o.shiftwidth = 4 -- Indent width = 4 spaces
 vim.o.expandtab = true -- Use spaces instead of tabs
-vim.o.softtabstop = 4  -- Tab key inserts 4 spaces
+vim.o.softtabstop = 4 -- Tab key inserts 4 spaces
 
 -- File-specific indentation
-vim.api.nvim_create_autocmd("FileType", {
+vim.api.nvim_create_autocmd('FileType', {
   pattern = {
-    "javascript", "typescript", "jsx", "tsx", "json", "yaml", "html", "css", "scss"
+    'javascript',
+    'typescript',
+    'jsx',
+    'tsx',
+    'json',
+    'yaml',
+    'html',
+    'css',
+    'scss',
   },
   callback = function()
     vim.bo.tabstop = 2
@@ -146,18 +154,18 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "go", "make" },
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'go', 'make' },
   callback = function()
     vim.bo.tabstop = 4
     vim.bo.shiftwidth = 4
     vim.bo.softtabstop = 4
-    vim.bo.expandtab = false  -- Use real tabs for Go and Makefiles
+    vim.bo.expandtab = false -- Use real tabs for Go and Makefiles
   end,
 })
 
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "python" },
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'python' },
   callback = function()
     vim.bo.tabstop = 4
     vim.bo.shiftwidth = 4
@@ -319,10 +327,14 @@ require('lazy').setup({
     },
     config = function()
       require('nvim-tree').setup {
+        update_focused_file = {
+          enable = true,      -- Enable auto-focus on current file
+          update_root = false, -- Don't change root directory
+        },
         filters = {
-          dotfiles = false,      -- Show hidden files (like .a directory)
-          git_ignored = false,   -- Show files/directories from .gitignore
-          custom = { ".git" },   -- Hide only .git directory
+          dotfiles = false, -- Show hidden files (like .a directory)
+          git_ignored = false, -- Show files/directories from .gitignore
+          custom = { '.git' }, -- Hide only .git directory
         },
         renderer = {
           icons = {
@@ -389,68 +401,68 @@ require('lazy').setup({
     },
   },
 
-  {
-    'romgrk/barbar.nvim',
-    dependencies = {
-      'lewis6991/gitsigns.nvim', -- OPTIONAL: for git status
-      'nvim-tree/nvim-web-devicons', -- OPTIONAL: for file icons
-    },
-    init = function()
-      vim.g.barbar_auto_setup = false
-    end,
-    opts = {
-      -- lazy.nvim will automatically call setup for you. put your options here, anything missing will use the default:
-      -- animation = true,
-      -- insert_at_start = true,
-      -- …etc.
-    },
-    version = '^1.0.0', -- optional: only update when a new 1.x version is released
-    config = function()
-      local barbar = require 'barbar'
-      barbar.setup {
-        clickable = true, -- Enables/disables clickable tabs
-        tabpages = false, -- Enable/disables current/total tabpages indicator (top right corner)
-        insert_at_end = true,
-        icons = {
-          button = '',
-          buffer_index = true,
-          filetype = { enabled = false },
-          visible = { modified = { buffer_number = false } },
-          gitsigns = {
-            added = { enabled = true, icon = '+' },
-            changed = { enabled = true, icon = '~' },
-            deleted = { enabled = true, icon = '-' },
-          },
-        },
-      }
-      -- key maps
-      local map = vim.api.nvim_set_keymap
-      local opts = { noremap = true, silent = true }
+  --{
+  --  'romgrk/barbar.nvim',
+  --  dependencies = {
+  --    'lewis6991/gitsigns.nvim', -- OPTIONAL: for git status
+  --    'nvim-tree/nvim-web-devicons', -- OPTIONAL: for file icons
+  --  },
+  --  init = function()
+  --    vim.g.barbar_auto_setup = false
+  --  end,
+  --  opts = {
+  --    -- lazy.nvim will automatically call setup for you. put your options here, anything missing will use the default:
+  --    -- animation = true,
+  --    -- insert_at_start = true,
+  --    -- …etc.
+  --  },
+  --  version = '^1.0.0', -- optional: only update when a new 1.x version is released
+  --  config = function()
+  --    local barbar = require 'barbar'
+  --    barbar.setup {
+  --      clickable = true, -- Enables/disables clickable tabs
+  --      tabpages = false, -- Enable/disables current/total tabpages indicator (top right corner)
+  --      insert_at_end = true,
+  --      icons = {
+  --        button = '',
+  --        buffer_index = true,
+  --        filetype = { enabled = false },
+  --        visible = { modified = { buffer_number = false } },
+  --        gitsigns = {
+  --          added = { enabled = true, icon = '+' },
+  --          changed = { enabled = true, icon = '~' },
+  --          deleted = { enabled = true, icon = '-' },
+  --        },
+  --      },
+  --    }
+  --    -- key maps
+  --    local map = vim.api.nvim_set_keymap
+  --    local opts = { noremap = true, silent = true }
 
-      -- Move to previous/next
-      map('n', '<C-,>', '<Cmd>BufferPrevious<CR>', opts)
-      map('n', '<C-.>', '<Cmd>BufferNext<CR>', opts)
-      -- Re-order to previous/next
-      map('n', '<A-<>', '<Cmd>BufferMovePrevious<CR>', opts)
-      map('n', '<A->>', '<Cmd>BufferMoveNext<CR>', opts)
-      -- Goto buffer in position...
-      map('n', '<A-1>', '<Cmd>BufferGoto 1<CR>', opts)
-      map('n', '<A-2>', '<Cmd>BufferGoto 2<CR>', opts)
-      map('n', '<A-3>', '<Cmd>BufferGoto 3<CR>', opts)
-      map('n', '<A-4>', '<Cmd>BufferGoto 4<CR>', opts)
-      map('n', '<A-5>', '<Cmd>BufferGoto 5<CR>', opts)
-      map('n', '<A-6>', '<Cmd>BufferGoto 6<CR>', opts)
-      map('n', '<A-7>', '<Cmd>BufferGoto 7<CR>', opts)
-      map('n', '<A-8>', '<Cmd>BufferGoto 8<CR>', opts)
-      map('n', '<A-9>', '<Cmd>BufferGoto 9<CR>', opts)
-      map('n', '<A-0>', '<Cmd>BufferLast<CR>', opts)
-      -- Pin/unpin buffer
-      map('n', '<A-p>', '<Cmd>BufferPin<CR>', opts)
-      -- Close buffer
-      map('n', '<C-c>', '<Cmd>BufferClose<CR>', opts)
-      map('n', '<C-b>', '<Cmd>BufferCloseAllButCurrent<CR>', opts)
-    end,
-  },
+  --    -- Move to previous/next
+  --    map('n', '<C-,>', '<Cmd>BufferPrevious<CR>', opts)
+  --    map('n', '<C-.>', '<Cmd>BufferNext<CR>', opts)
+  --    -- Re-order to previous/next
+  --    map('n', '<A-<>', '<Cmd>BufferMovePrevious<CR>', opts)
+  --    map('n', '<A->>', '<Cmd>BufferMoveNext<CR>', opts)
+  --    -- Goto buffer in position...
+  --    map('n', '<A-1>', '<Cmd>BufferGoto 1<CR>', opts)
+  --    map('n', '<A-2>', '<Cmd>BufferGoto 2<CR>', opts)
+  --    map('n', '<A-3>', '<Cmd>BufferGoto 3<CR>', opts)
+  --    map('n', '<A-4>', '<Cmd>BufferGoto 4<CR>', opts)
+  --    map('n', '<A-5>', '<Cmd>BufferGoto 5<CR>', opts)
+  --    map('n', '<A-6>', '<Cmd>BufferGoto 6<CR>', opts)
+  --    map('n', '<A-7>', '<Cmd>BufferGoto 7<CR>', opts)
+  --    map('n', '<A-8>', '<Cmd>BufferGoto 8<CR>', opts)
+  --    map('n', '<A-9>', '<Cmd>BufferGoto 9<CR>', opts)
+  --    map('n', '<A-0>', '<Cmd>BufferLast<CR>', opts)
+  --    -- Pin/unpin buffer
+  --    map('n', '<A-p>', '<Cmd>BufferPin<CR>', opts)
+  --    -- Close buffer
+  --    map('n', '<C-c>', '<Cmd>BufferClose<CR>', opts)
+  --    map('n', '<C-b>', '<Cmd>BufferCloseAllButCurrent<CR>', opts)
+  --  end,
+  --},
 
   -- Alternatively, use `config = function() ... end` for full control over the configuration.
   -- If you prefer to call `setup` explicitly, use:
@@ -659,40 +671,56 @@ require('lazy').setup({
       -- Search ALL files including hidden and .gitignore, but exclude common build/cache directories
       -- This allows finding files in custom hidden dirs (like .a/) while avoiding noise from node_modules, etc.
       vim.keymap.set('n', '<leader>sF', function()
-        builtin.find_files({ 
-          find_command = { 
-            'rg', 
-            '--files', 
+        builtin.find_files {
+          find_command = {
+            'rg',
+            '--files',
             '--hidden',
             '--no-ignore',
-            '--glob', '!**/node_modules/**',
-            '--glob', '!**/.git/**',
-            '--glob', '!**/.idea/**',
-            '--glob', '!**/target/**',
-            '--glob', '!**/build/**',
-            '--glob', '!**/dist/**',
-            '--glob', '!**/.next/**',
-            '--glob', '!**/coverage/**'
-          }
-        })
+            '--glob',
+            '!**/node_modules/**',
+            '--glob',
+            '!**/.git/**',
+            '--glob',
+            '!**/.idea/**',
+            '--glob',
+            '!**/target/**',
+            '--glob',
+            '!**/build/**',
+            '--glob',
+            '!**/dist/**',
+            '--glob',
+            '!**/.next/**',
+            '--glob',
+            '!**/coverage/**',
+          },
+        }
       end, { desc = '[S]earch ALL [F]iles (smart ignore)' })
 
       -- Live grep with same smart ignore rules
       vim.keymap.set('n', '<leader>sG', function()
-        builtin.live_grep({ 
-          additional_args = { 
-            '--hidden', 
+        builtin.live_grep {
+          additional_args = {
+            '--hidden',
             '--no-ignore',
-            '--glob', '!**/node_modules/**',
-            '--glob', '!**/.git/**',
-            '--glob', '!**/.idea/**',
-            '--glob', '!**/target/**',
-            '--glob', '!**/build/**',
-            '--glob', '!**/dist/**',
-            '--glob', '!**/.next/**',
-            '--glob', '!**/coverage/**'
-          }
-        })
+            '--glob',
+            '!**/node_modules/**',
+            '--glob',
+            '!**/.git/**',
+            '--glob',
+            '!**/.idea/**',
+            '--glob',
+            '!**/target/**',
+            '--glob',
+            '!**/build/**',
+            '--glob',
+            '!**/dist/**',
+            '--glob',
+            '!**/.next/**',
+            '--glob',
+            '!**/coverage/**',
+          },
+        }
       end, { desc = '[S]earch by [G]rep (smart ignore)' })
     end,
   },
@@ -907,7 +935,7 @@ require('lazy').setup({
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
         -- clangd = {},
-        -- gopls = {},
+        gopls = {}, -- Go language server
         -- pyright = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
@@ -952,9 +980,12 @@ require('lazy').setup({
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
         -- Formatters
-        'prettier', 'prettierd', -- JS/TS/JSON/HTML/CSS/YAML/Markdown
-        'black', 'isort', -- Python
-        'gofumpt', 'goimports', -- Go
+        'prettier',
+        'prettierd', -- JS/TS/JSON/HTML/CSS/YAML/Markdown
+        'black',
+        'isort', -- Python
+        'gofumpt',
+        'goimports', -- Go
         'rustfmt', -- Rust
         'clang-format', -- C/C++
         'shfmt', -- Shell scripts
@@ -991,32 +1022,17 @@ require('lazy').setup({
         mode = '',
         desc = '[F]ormat buffer',
       },
-      {
-        '<D-l>', -- Cmd+L на macOS
-        function()
-          require('conform').format { async = true, lsp_format = 'fallback' }
-        end,
-        mode = { 'n', 'v' },
-        desc = 'Format buffer (Cmd+L)',
-      },
     },
-    opts = {
-      notify_on_error = false,
-      format_on_save = function(bufnr)
-        -- Disable "format_on_save lsp_fallback" for languages that don't
-        -- have a well standardized coding style. You can add additional
-        -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true }
-        if disable_filetypes[vim.bo[bufnr].filetype] then
-          return nil
-        else
-          return {
-            timeout_ms = 500,
-            lsp_format = 'fallback',
-          }
-        end
-      end,
-      formatters_by_ft = {
+    config = function()
+      local conform = require('conform')
+      
+      conform.setup({
+        notify_on_error = false,
+        -- Disable format on save
+        format_on_save = false,
+        -- Format on buffer leave instead
+        format_after_save = false,
+        formatters_by_ft = {
         lua = { 'stylua' },
         go = { 'gofumpt', 'goimports' },
         python = { 'isort', 'black' },
@@ -1036,8 +1052,20 @@ require('lazy').setup({
         java = { 'google-java-format' },
         php = { 'php_cs_fixer' },
         sh = { 'shfmt' },
-      },
-    },
+        },
+      })
+      
+      -- Format on buffer leave to avoid undo issues
+      vim.api.nvim_create_autocmd("BufLeave", {
+        pattern = "*",
+        callback = function()
+          -- Only format if the buffer is valid
+          if vim.bo.buflisted and vim.bo.modifiable then
+            conform.format({ async = false, lsp_format = 'fallback' })
+          end
+        end,
+      })
+    end,
   },
 
   { -- Autocompletion
