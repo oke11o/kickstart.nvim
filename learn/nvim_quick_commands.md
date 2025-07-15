@@ -29,17 +29,22 @@
 - `H` - Toggle hidden files visibility
 - `I` - Toggle git ignored files visibility
 
-## Buffer Management (barbar.nvim)
+## Buffer Management (Standard Vim)
 
 ### Buffer Navigation
-- `Ctrl-,` - Move to previous buffer
-- `Ctrl-.` - Move to next buffer
-- `Alt-1` through `Alt-9` - Jump to specific buffer by number
-- `Alt-0` - Jump to last buffer
+- `Tab` - Next buffer (recommended)
+- `Shift+Tab` - Previous buffer (recommended)  
+- `Ctrl-,` - Previous buffer (if working)
+- `Ctrl-.` - Next buffer (if working)
+- `;bp` - Previous buffer (leader key)
+- `;bn` - Next buffer (leader key)
+- `;bl` - List all buffers
+- `:b<number>` - Jump to buffer by number
+- `:b<partial_name>` - Jump to buffer by partial name
 
 ### Buffer Operations
 - `Ctrl-c` - Close current buffer
-- `Ctrl-b` - Close all buffers except current
-- `Alt-p` - Pin/unpin buffer
-- `Alt-<` - Move buffer left
-- `Alt->` - Move buffer right
+- `;bd` - Close current buffer (alternative)
+- `:bd` - Close current buffer (command)
+- `:bdelete` - Close current buffer (full command)
+- `:ls` - List all buffers (same as `;bl`)

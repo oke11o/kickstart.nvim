@@ -190,6 +190,9 @@ vim.o.updatetime = 250
 -- Decrease mapped sequence wait time
 vim.o.timeoutlen = 300
 
+-- Faster escape sequence timeout for terminal key combinations
+vim.o.ttimeoutlen = 50
+
 -- Configure how new splits should be opened
 vim.o.splitright = true
 vim.o.splitbelow = true
@@ -262,6 +265,25 @@ vim.keymap.set('n', '<leader>cf', '<cmd>let @+ = expand("%")<CR>', { desc = '[C]
 vim.keymap.set('n', '<leader>cF', '<cmd>let @+ = expand("%:p")<CR>', { desc = '[C]opy [F]ull path' })
 vim.keymap.set('n', '<leader>cn', '<cmd>let @+ = expand("%:t")<CR>', { desc = '[C]opy file [N]ame' })
 
+-- Buffer navigation (since barbar.nvim is disabled)
+vim.keymap.set('n', '<leader>bp', '<cmd>bprevious<CR>', { desc = '[B]uffer [P]revious' })
+vim.keymap.set('n', '<leader>bn', '<cmd>bnext<CR>', { desc = '[B]uffer [N]ext' })
+vim.keymap.set('n', '<leader>bd', '<cmd>bdelete<CR>', { desc = '[B]uffer [D]elete' })
+vim.keymap.set('n', '<leader>bl', '<cmd>ls<CR>', { desc = '[B]uffer [L]ist' })
+vim.keymap.set('n', '<C-c>', '<cmd>bdelete<CR>', { desc = 'Close buffer' })
+
+-- Buffer navigation with Ctrl+comma/period (via Ghostty escape sequences)
+vim.keymap.set('n', '<C-,>', '<cmd>bprevious<CR>', { desc = 'Previous buffer', noremap = true, silent = true })
+vim.keymap.set('n', '<C-.>', '<cmd>bnext<CR>', { desc = 'Next buffer', noremap = true, silent = true })
+
+-- Ghostty specific escape sequences for Ctrl+comma/period
+vim.keymap.set('n', '<Esc>[1;5,', '<cmd>bprevious<CR>', { desc = 'Previous buffer (Ghostty)', noremap = true, silent = true })
+vim.keymap.set('n', '<Esc>[1;5.', '<cmd>bnext<CR>', { desc = 'Next buffer (Ghostty)', noremap = true, silent = true })
+
+-- Alternative buffer navigation with Tab
+vim.keymap.set('n', '<Tab>', '<cmd>bnext<CR>', { desc = 'Next buffer' })
+vim.keymap.set('n', '<S-Tab>', '<cmd>bprevious<CR>', { desc = 'Previous buffer' })
+
 -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
 -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
 -- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
@@ -328,7 +350,7 @@ require('lazy').setup({
     config = function()
       require('nvim-tree').setup {
         update_focused_file = {
-          enable = true,      -- Enable auto-focus on current file
+          enable = true, -- Enable auto-focus on current file
           update_root = false, -- Don't change root directory
         },
         filters = {
@@ -1024,44 +1046,44 @@ require('lazy').setup({
       },
     },
     config = function()
-      local conform = require('conform')
-      
-      conform.setup({
+      local conform = require 'conform'
+
+      conform.setup {
         notify_on_error = false,
         -- Disable format on save
         format_on_save = false,
         -- Format on buffer leave instead
         format_after_save = false,
         formatters_by_ft = {
-        lua = { 'stylua' },
-        go = { 'gofumpt', 'goimports' },
-        python = { 'isort', 'black' },
-        javascript = { 'prettierd', 'prettier', stop_after_first = true },
-        typescript = { 'prettierd', 'prettier', stop_after_first = true },
-        javascriptreact = { 'prettierd', 'prettier', stop_after_first = true },
-        typescriptreact = { 'prettierd', 'prettier', stop_after_first = true },
-        json = { 'prettierd', 'prettier', stop_after_first = true },
-        html = { 'prettierd', 'prettier', stop_after_first = true },
-        css = { 'prettierd', 'prettier', stop_after_first = true },
-        scss = { 'prettierd', 'prettier', stop_after_first = true },
-        yaml = { 'prettierd', 'prettier', stop_after_first = true },
-        markdown = { 'prettierd', 'prettier', stop_after_first = true },
-        rust = { 'rustfmt' },
-        c = { 'clang-format' },
-        cpp = { 'clang-format' },
-        java = { 'google-java-format' },
-        php = { 'php_cs_fixer' },
-        sh = { 'shfmt' },
+          lua = { 'stylua' },
+          go = { 'gofumpt', 'goimports' },
+          python = { 'isort', 'black' },
+          javascript = { 'prettierd', 'prettier', stop_after_first = true },
+          typescript = { 'prettierd', 'prettier', stop_after_first = true },
+          javascriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+          typescriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+          json = { 'prettierd', 'prettier', stop_after_first = true },
+          html = { 'prettierd', 'prettier', stop_after_first = true },
+          css = { 'prettierd', 'prettier', stop_after_first = true },
+          scss = { 'prettierd', 'prettier', stop_after_first = true },
+          yaml = { 'prettierd', 'prettier', stop_after_first = true },
+          markdown = { 'prettierd', 'prettier', stop_after_first = true },
+          rust = { 'rustfmt' },
+          c = { 'clang-format' },
+          cpp = { 'clang-format' },
+          java = { 'google-java-format' },
+          php = { 'php_cs_fixer' },
+          sh = { 'shfmt' },
         },
-      })
-      
+      }
+
       -- Format on buffer leave to avoid undo issues
-      vim.api.nvim_create_autocmd("BufLeave", {
-        pattern = "*",
+      vim.api.nvim_create_autocmd('BufLeave', {
+        pattern = '*',
         callback = function()
           -- Only format if the buffer is valid
           if vim.bo.buflisted and vim.bo.modifiable then
-            conform.format({ async = false, lsp_format = 'fallback' })
+            conform.format { async = false, lsp_format = 'fallback' }
           end
         end,
       })
