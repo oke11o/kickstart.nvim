@@ -9,6 +9,7 @@ This is a kickstart.nvim-based Neovim configuration that serves as a personal de
 ## Key Configuration Details
 
 ### Architecture
+
 - **Single-file approach**: Primary configuration in `init.lua` (1,167 lines) with extensive inline documentation
 - **Leader key**: `;` (semicolon) used for both leader and maplocalleader
 - **Plugin management**: Uses lazy.nvim with version locking via `lazy-lock.json`
@@ -17,17 +18,20 @@ This is a kickstart.nvim-based Neovim configuration that serves as a personal de
 ### Core Components
 
 **File Management & Navigation**
+
 - nvim-tree.lua configured as primary file explorer (not neo-tree)
 - Telescope for fuzzy finding with comprehensive keymaps
 - Auto-save enabled on text changes and insert leave
 
 **Development Environment**
+
 - LSP setup with mason.nvim for automatic server installation
 - blink.cmp for modern completion (replaces nvim-cmp)
 - conform.nvim for code formatting
 - Currently configured for Lua development (lua_ls server)
 
 **UI & Experience**
+
 - tokyonight-day colorscheme
 - barbar.nvim for buffer/tab management with extensive keymaps
 - mini.nvim modules (statusline, surround, textobjects)
@@ -36,18 +40,21 @@ This is a kickstart.nvim-based Neovim configuration that serves as a personal de
 ### Essential Keymaps
 
 **File Operations**
+
 - `;a` - Toggle nvim-tree file explorer
 - `;sf` - Search files with Telescope
 - `;sg` - Live grep search
 - `;sn` - Search Neovim config files
 
 **Buffer Management**
+
 - `Ctrl-,` / `Ctrl-.` - Navigate between buffers
 - `Ctrl-c` - Close current buffer
 - `Ctrl-b` - Close all buffers except current
 - `Alt-1` through `Alt-9` - Jump to specific buffer
 
 **LSP Operations**
+
 - `grd` - Go to definition
 - `grr` - Find references
 - `grn` - Rename symbol
@@ -56,6 +63,7 @@ This is a kickstart.nvim-based Neovim configuration that serves as a personal de
 ### Development Workflow
 
 **Plugin Management**
+
 ```bash
 # View plugin status
 nvim +Lazy
@@ -67,6 +75,7 @@ nvim +"Lazy update"
 ```
 
 **Health Checking**
+
 ```bash
 # Check overall Neovim health
 nvim +checkhealth
@@ -76,19 +85,22 @@ nvim +"checkhealth kickstart"
 ```
 
 **Configuration Management**
+
 - All primary configuration in single `init.lua` file
-- Custom plugins added to `lua/custom/plugins/init.lua` 
+- Custom plugins added to `lua/custom/plugins/init.lua`
 - Optional kickstart plugins can be enabled by uncommenting lines in init.lua
 - Version control includes `lazy-lock.json` for reproducible plugin versions
 
 ### External Dependencies
 
 **Required**
+
 - Neovim 0.10+ (latest stable or nightly)
 - git, make, unzip, C compiler (gcc)
 - ripgrep (for telescope live grep)
 
 **Optional**
+
 - fd-find (for faster file finding)
 - Nerd Font (set `vim.g.have_nerd_font = true` if available)
 - Language-specific tools (npm for TypeScript, go for Golang, etc.)
@@ -97,6 +109,7 @@ nvim +"checkhealth kickstart"
 
 **Adding New Plugins**
 Add to `lua/custom/plugins/init.lua`:
+
 ```lua
 return {
   {
@@ -111,6 +124,7 @@ return {
 
 **LSP Configuration**
 Add language servers to the `servers` table in init.lua around line 820:
+
 ```lua
 local servers = {
   -- Add new servers here
@@ -121,6 +135,7 @@ local servers = {
 
 **Keymap Additions**
 Follow the existing pattern with descriptive names:
+
 ```lua
 vim.keymap.set('n', '<leader>key', function_or_command, { desc = '[D]escription' })
 ```
@@ -130,3 +145,4 @@ This configuration prioritizes educational value and readability over modularity
 ### Tmux Integration
 
 The user actively uses tmux alongside Neovim. When the user asks about tmux commands and confirms they work, add the successful commands to `/learn/tmux/quick_commands.md` for future reference. The user has a custom tmux configuration with `Ctrl-a` as prefix key.
+
