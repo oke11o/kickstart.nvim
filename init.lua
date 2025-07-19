@@ -350,20 +350,18 @@ require('lazy').setup({
     config = function()
       require('nvim-tree').setup {
         update_focused_file = {
-          enable = true, -- Enable auto-focus on current file
-          update_root = false, -- Don't change root directory
+          enable = true,
+          update_root = false,
         },
         filters = {
-          dotfiles = false, -- Show hidden files (like .a directory)
-          git_ignored = false, -- Show files/directories from .gitignore
-          custom = { '.git' }, -- Hide only .git directory
+          enable = false,
         },
         renderer = {
           icons = {
             show = {
               git = true,
-              file = false,
               folder = true,
+              file = false,
               folder_arrow = true,
             },
             glyphs = {
@@ -382,6 +380,10 @@ require('lazy').setup({
               },
             },
           },
+        },
+        diagnostics = {
+          enable = true,
+          show_on_dirs = true,
         },
       }
     end,
