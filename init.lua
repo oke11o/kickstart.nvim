@@ -284,6 +284,10 @@ vim.keymap.set('n', '<Esc>[1;5.', '<cmd>bnext<CR>', { desc = 'Next buffer (Ghost
 vim.keymap.set('n', '<Tab>', '<cmd>bnext<CR>', { desc = 'Next buffer' })
 vim.keymap.set('n', '<S-Tab>', '<cmd>bprevious<CR>', { desc = 'Previous buffer' })
 
+-- Comment toggle with Shift+/ (? in terminal)
+vim.keymap.set('n', '?', 'gcc', { desc = 'Toggle comment', remap = true })
+vim.keymap.set('v', '?', 'gc', { desc = 'Toggle comment', remap = true })
+
 -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
 -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
 -- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
