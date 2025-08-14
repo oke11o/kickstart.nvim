@@ -1216,6 +1216,10 @@ require('lazy').setup({
 
       -- You can configure highlights by doing something like:
       vim.cmd.hi 'Comment gui=none'
+      
+      -- Improve markdown inline code readability
+      vim.cmd.hi 'markdownCode guibg=#e8f4f8 guifg=#0f4a85'
+      vim.cmd.hi '@markup.raw.markdown_inline guibg=#e8f4f8 guifg=#0f4a85'
     end,
   },
 
