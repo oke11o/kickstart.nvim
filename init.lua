@@ -288,6 +288,22 @@ vim.keymap.set('n', '<S-Tab>', '<cmd>bprevious<CR>', { desc = 'Previous buffer' 
 vim.keymap.set('n', '?', 'gcc', { desc = 'Toggle comment', remap = true })
 vim.keymap.set('v', '?', 'gc', { desc = 'Toggle comment', remap = true })
 
+-- Registers (множественные буферы обмена)
+vim.keymap.set('n', '<leader>r', '<cmd>registers<CR>', { desc = '[R]egisters - show all' })
+-- Yank в именованные регистры
+vim.keymap.set('n', '<leader>ya', '"ay', { desc = '[Y]ank to register [a]' })
+vim.keymap.set('n', '<leader>yb', '"by', { desc = '[Y]ank to register [b]' })
+vim.keymap.set('n', '<leader>yc', '"cy', { desc = '[Y]ank to register [c]' })
+vim.keymap.set('v', '<leader>ya', '"ay', { desc = '[Y]ank to register [a]' })
+vim.keymap.set('v', '<leader>yb', '"by', { desc = '[Y]ank to register [b]' })
+vim.keymap.set('v', '<leader>yc', '"cy', { desc = '[Y]ank to register [c]' })
+-- Paste из именованных регистров
+vim.keymap.set('n', '<leader>pa', '"ap', { desc = '[P]aste from register [a]' })
+vim.keymap.set('n', '<leader>pb', '"bp', { desc = '[P]aste from register [b]' })
+vim.keymap.set('n', '<leader>pc', '"cp', { desc = '[P]aste from register [c]' })
+-- Paste без затирания регистра (в visual mode)
+vim.keymap.set('x', '<leader>p', '"_dP', { desc = '[P]aste without overwriting register' })
+
 -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
 -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
 -- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
@@ -353,6 +369,10 @@ require('lazy').setup({
     },
     config = function()
       require('nvim-tree').setup {
+        hijack_directories = {
+          enable = false,
+          auto_open = false,
+        },
         update_focused_file = {
           enable = true,
           update_root = false,
