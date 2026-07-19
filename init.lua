@@ -1009,7 +1009,8 @@ do
     'isort', -- Python
     'gofumpt',
     'goimports', -- Go
-    'rustfmt', -- Rust
+    -- NOTE: rustfmt is NOT a Mason package — install via `rustup component add rustfmt`.
+    --   It stays in formatters_by_ft below and conform uses the binary from PATH.
     'clang-format', -- C/C++
     'shfmt', -- Shell scripts
   })
