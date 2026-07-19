@@ -95,11 +95,17 @@ do
   -- Set <space> as the leader key
   -- See `:help mapleader`
   --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
-  vim.g.mapleader = ' '
-  vim.g.maplocalleader = ' '
+  vim.g.mapleader = ';'
+  vim.g.maplocalleader = ';'
 
   -- Set to true if you have a Nerd Font installed and selected in the terminal
   vim.g.have_nerd_font = false
+
+  -- disable netrw at the very start of your init.lua (nvim-tree is used instead)
+  vim.g.loaded_netrw = 1
+  vim.g.loaded_netrwPlugin = 1
+  -- enable 24-bit colour
+  vim.opt.termguicolors = true
 
   -- [[ Setting options ]]
   --  See `:help vim.o`
@@ -109,8 +115,7 @@ do
   -- Make line numbers default
   vim.o.number = true
   -- You can also add relative line numbers, to help with jumping.
-  --  Experiment for yourself to see if you like it!
-  -- vim.o.relativenumber = true
+  vim.o.relativenumber = true
 
   -- Enable mouse mode, can be useful for resizing splits for example!
   vim.o.mouse = 'a'
@@ -127,6 +132,53 @@ do
   -- Enable break indent
   vim.o.breakindent = true
 
+  -- Tab settings (default)
+  vim.o.tabstop = 4 -- Tab width = 4 spaces
+  vim.o.shiftwidth = 4 -- Indent width = 4 spaces
+  vim.o.expandtab = true -- Use spaces instead of tabs
+  vim.o.softtabstop = 4 -- Tab key inserts 4 spaces
+
+  -- File-specific indentation
+  vim.api.nvim_create_autocmd('FileType', {
+    pattern = {
+      'javascript',
+      'typescript',
+      'jsx',
+      'tsx',
+      'json',
+      'yaml',
+      'html',
+      'css',
+      'scss',
+    },
+    callback = function()
+      vim.bo.tabstop = 2
+      vim.bo.shiftwidth = 2
+      vim.bo.softtabstop = 2
+      vim.bo.expandtab = true
+    end,
+  })
+
+  vim.api.nvim_create_autocmd('FileType', {
+    pattern = { 'go', 'make' },
+    callback = function()
+      vim.bo.tabstop = 4
+      vim.bo.shiftwidth = 4
+      vim.bo.softtabstop = 4
+      vim.bo.expandtab = false -- Use real tabs for Go and Makefiles
+    end,
+  })
+
+  vim.api.nvim_create_autocmd('FileType', {
+    pattern = { 'python' },
+    callback = function()
+      vim.bo.tabstop = 4
+      vim.bo.shiftwidth = 4
+      vim.bo.softtabstop = 4
+      vim.bo.expandtab = true
+    end,
+  })
+
   -- Enable undo/redo changes even after closing and reopening a file
   vim.o.undofile = true
 
@@ -142,6 +194,9 @@ do
 
   -- Decrease mapped sequence wait time
   vim.o.timeoutlen = 300
+
+  -- Faster escape sequence timeout for terminal key combinations
+  vim.o.ttimeoutlen = 50
 
   -- Configure how new splits should be opened
   vim.o.splitright = true
@@ -209,6 +264,7 @@ do
     },
   }
 
+  vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
   vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
   -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
@@ -233,6 +289,53 @@ do
   vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
   vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
   vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+
+  -- Toggle nvim-tree file explorer
+  vim.keymap.set('n', '<leader>a', ':NvimTreeToggle<CR>', { noremap = true, silent = true }) -- SB
+
+  -- Copy file path keymaps
+  vim.keymap.set('n', '<leader>cf', '<cmd>let @+ = expand("%")<CR>', { desc = '[C]opy [F]ile path' })
+  vim.keymap.set('n', '<leader>cF', '<cmd>let @+ = expand("%:p")<CR>', { desc = '[C]opy [F]ull path' })
+  vim.keymap.set('n', '<leader>cn', '<cmd>let @+ = expand("%:t")<CR>', { desc = '[C]opy file [N]ame' })
+
+  -- Buffer navigation (since barbar.nvim is disabled)
+  vim.keymap.set('n', '<leader>bp', '<cmd>bprevious<CR>', { desc = '[B]uffer [P]revious' })
+  vim.keymap.set('n', '<leader>bn', '<cmd>bnext<CR>', { desc = '[B]uffer [N]ext' })
+  vim.keymap.set('n', '<leader>bd', '<cmd>bdelete<CR>', { desc = '[B]uffer [D]elete' })
+  vim.keymap.set('n', '<leader>bl', '<cmd>ls<CR>', { desc = '[B]uffer [L]ist' })
+  vim.keymap.set('n', '<C-c>', '<cmd>bdelete<CR>', { desc = 'Close buffer' })
+
+  -- Buffer navigation with Ctrl+comma/period (via Ghostty escape sequences)
+  vim.keymap.set('n', '<C-,>', '<cmd>bprevious<CR>', { desc = 'Previous buffer', noremap = true, silent = true })
+  vim.keymap.set('n', '<C-.>', '<cmd>bnext<CR>', { desc = 'Next buffer', noremap = true, silent = true })
+
+  -- Ghostty specific escape sequences for Ctrl+comma/period
+  vim.keymap.set('n', '<Esc>[1;5,', '<cmd>bprevious<CR>', { desc = 'Previous buffer (Ghostty)', noremap = true, silent = true })
+  vim.keymap.set('n', '<Esc>[1;5.', '<cmd>bnext<CR>', { desc = 'Next buffer (Ghostty)', noremap = true, silent = true })
+
+  -- Alternative buffer navigation with Tab
+  vim.keymap.set('n', '<Tab>', '<cmd>bnext<CR>', { desc = 'Next buffer' })
+  vim.keymap.set('n', '<S-Tab>', '<cmd>bprevious<CR>', { desc = 'Previous buffer' })
+
+  -- Comment toggle with Shift+/ (? in terminal)
+  vim.keymap.set('n', '?', 'gcc', { desc = 'Toggle comment', remap = true })
+  vim.keymap.set('v', '?', 'gc', { desc = 'Toggle comment', remap = true })
+
+  -- Registers (множественные буферы обмена)
+  vim.keymap.set('n', '<leader>r', '<cmd>registers<CR>', { desc = '[R]egisters - show all' })
+  -- Yank в именованные регистры
+  vim.keymap.set('n', '<leader>ya', '"ay', { desc = '[Y]ank to register [a]' })
+  vim.keymap.set('n', '<leader>yb', '"by', { desc = '[Y]ank to register [b]' })
+  vim.keymap.set('n', '<leader>yc', '"cy', { desc = '[Y]ank to register [c]' })
+  vim.keymap.set('v', '<leader>ya', '"ay', { desc = '[Y]ank to register [a]' })
+  vim.keymap.set('v', '<leader>yb', '"by', { desc = '[Y]ank to register [b]' })
+  vim.keymap.set('v', '<leader>yc', '"cy', { desc = '[Y]ank to register [c]' })
+  -- Paste из именованных регистров
+  vim.keymap.set('n', '<leader>pa', '"ap', { desc = '[P]aste from register [a]' })
+  vim.keymap.set('n', '<leader>pb', '"bp', { desc = '[P]aste from register [b]' })
+  vim.keymap.set('n', '<leader>pc', '"cp', { desc = '[P]aste from register [c]' })
+  -- Paste без затирания регистра (в visual mode)
+  vim.keymap.set('x', '<leader>p', '"_dP', { desc = '[P]aste without overwriting register' })
 
   -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
   -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
@@ -392,8 +495,12 @@ do
 
   -- Load the colorscheme here.
   -- Like many other themes, this one has different styles, and you could load
-  -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-  vim.cmd.colorscheme 'tokyonight-night'
+  -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-night'.
+  vim.cmd.colorscheme 'tokyonight-day'
+
+  -- Improve markdown inline code readability
+  vim.cmd.hi 'markdownCode guibg=#e8f4f8 guifg=#0f4a85'
+  vim.cmd.hi '@markup.raw.markdown_inline guibg=#e8f4f8 guifg=#0f4a85'
 
   -- Highlight todo, notes, etc in comments
   vim.pack.add { gh 'folke/todo-comments.nvim' }
@@ -447,6 +554,87 @@ do
 
   -- ... and there is more!
   --  Check out: https://github.com/nvim-mini/mini.nvim
+
+  -- [[ nvim-tree: file explorer ]] (toggled with <leader>a)
+  vim.pack.add {
+    gh 'nvim-tree/nvim-web-devicons',
+    gh 'nvim-tree/nvim-tree.lua',
+  }
+  require('nvim-tree').setup {
+    hijack_directories = {
+      enable = false,
+      auto_open = false,
+    },
+    update_focused_file = {
+      enable = true,
+      update_root = false,
+    },
+    filters = {
+      enable = false,
+    },
+    renderer = {
+      icons = {
+        show = {
+          git = true,
+          folder = true,
+          file = false,
+          folder_arrow = true,
+        },
+        glyphs = {
+          folder = {
+            arrow_closed = '⏵',
+            arrow_open = '⏷',
+          },
+          git = {
+            unstaged = '✗',
+            staged = '✓',
+            unmerged = '⌥',
+            renamed = '➜',
+            untracked = '★',
+            deleted = '⊖',
+            ignored = '◌',
+          },
+        },
+      },
+    },
+    diagnostics = {
+      enable = true,
+      show_on_dirs = true,
+    },
+  }
+
+  -- [[ auto-save: save on InsertLeave / TextChanged ]]
+  vim.pack.add { gh 'pocco81/auto-save.nvim' }
+  require('auto-save').setup {
+    enabled = true, -- start auto-save when the plugin is loaded
+    execution_message = {
+      message = function() -- message to print on save
+        return ('AutoSave: saved at ' .. vim.fn.strftime '%H:%M:%S')
+      end,
+      dim = 0.18, -- dim the color of `message`
+      cleaning_interval = 1250, -- (milliseconds) automatically clean MsgArea after displaying `message`
+    },
+    trigger_events = { 'InsertLeave', 'TextChanged' }, -- vim events that trigger auto-save
+    -- function that determines whether to save the current buffer or not
+    condition = function(buf)
+      local fn = vim.fn
+      local utils = require 'auto-save.utils.data'
+
+      if fn.getbufvar(buf, '&modifiable') == 1 and utils.not_in(fn.getbufvar(buf, '&filetype'), {}) then
+        return true -- met condition(s), can save
+      end
+      return false -- can't save
+    end,
+    write_all_buffers = false, -- write all buffers when the current one meets `condition`
+    debounce_delay = 135, -- saves the file at most every `debounce_delay` milliseconds
+    callbacks = { -- functions to be executed at different intervals
+      enabling = nil,
+      disabling = nil,
+      before_asserting_save = nil,
+      before_saving = nil,
+      after_saving = nil,
+    },
+  }
 end
 
 -- ============================================================
@@ -582,6 +770,61 @@ do
 
   -- Shortcut for searching your Neovim configuration files
   vim.keymap.set('n', '<leader>sn', function() builtin.find_files { cwd = vim.fn.stdpath 'config', follow = true } end, { desc = '[S]earch [N]eovim files' })
+
+  -- Search ALL files including hidden and .gitignore, but exclude common build/cache directories
+  -- This allows finding files in custom hidden dirs (like .a/) while avoiding noise from node_modules, etc.
+  vim.keymap.set('n', '<leader>sF', function()
+    builtin.find_files {
+      find_command = {
+        'rg',
+        '--files',
+        '--hidden',
+        '--no-ignore',
+        '--glob',
+        '!**/node_modules/**',
+        '--glob',
+        '!**/.git/**',
+        '--glob',
+        '!**/.idea/**',
+        '--glob',
+        '!**/target/**',
+        '--glob',
+        '!**/build/**',
+        '--glob',
+        '!**/dist/**',
+        '--glob',
+        '!**/.next/**',
+        '--glob',
+        '!**/coverage/**',
+      },
+    }
+  end, { desc = '[S]earch ALL [F]iles (smart ignore)' })
+
+  -- Live grep with same smart ignore rules
+  vim.keymap.set('n', '<leader>sG', function()
+    builtin.live_grep {
+      additional_args = {
+        '--hidden',
+        '--no-ignore',
+        '--glob',
+        '!**/node_modules/**',
+        '--glob',
+        '!**/.git/**',
+        '--glob',
+        '!**/.idea/**',
+        '--glob',
+        '!**/target/**',
+        '--glob',
+        '!**/build/**',
+        '--glob',
+        '!**/dist/**',
+        '--glob',
+        '!**/.next/**',
+        '--glob',
+        '!**/coverage/**',
+      },
+    }
+  end, { desc = '[S]earch by [G]rep (smart ignore)' })
 end
 
 -- ============================================================
@@ -693,15 +936,15 @@ do
   ---@type table<string, vim.lsp.Config>
   local servers = {
     -- clangd = {},
-    -- gopls = {},
-    -- pyright = {},
+    gopls = {}, -- Go language server
+    pyright = {}, -- Python language server
     -- rust_analyzer = {},
     --
     -- Some languages (like typescript) have entire language plugins that can be useful:
     --    https://github.com/pmizio/typescript-tools.nvim
     --
     -- But for many setups, the LSP (`ts_ls`) will work just fine
-    -- ts_ls = {},
+    ts_ls = {}, -- TypeScript / JavaScript
 
     stylua = {}, -- Used to format Lua code
 
@@ -759,7 +1002,16 @@ do
   -- You can press `g?` for help in this menu.
   local ensure_installed = vim.tbl_keys(servers or {})
   vim.list_extend(ensure_installed, {
-    -- You can add other tools here that you want Mason to install
+    -- Formatters
+    'prettier',
+    'prettierd', -- JS/TS/JSON/HTML/CSS/YAML/Markdown
+    'black',
+    'isort', -- Python
+    'gofumpt',
+    'goimports', -- Go
+    'rustfmt', -- Rust
+    'clang-format', -- C/C++
+    'shfmt', -- Shell scripts
   })
 
   require('mason-tool-installer').setup { ensure_installed = ensure_installed }
@@ -777,33 +1029,47 @@ end
 do
   -- [[ Formatting ]]
   vim.pack.add { gh 'stevearc/conform.nvim' }
-  require('conform').setup {
+  local conform = require 'conform'
+
+  conform.setup {
     notify_on_error = false,
-    format_on_save = function(bufnr)
-      -- You can specify filetypes to autoformat on save here:
-      local enabled_filetypes = {
-        -- lua = true,
-        -- python = true,
-      }
-      if enabled_filetypes[vim.bo[bufnr].filetype] then
-        return { timeout_ms = 500 }
-      else
-        return nil
-      end
-    end,
-    default_format_opts = {
-      lsp_format = 'fallback', -- Use external formatters if configured below, otherwise use LSP formatting. Set to `false` to disable LSP formatting entirely.
-    },
-    -- You can also specify external formatters in here.
+    -- Disable format on save
+    format_on_save = false,
+    -- Format on buffer leave instead (configured below)
+    format_after_save = false,
     formatters_by_ft = {
-      -- rust = { 'rustfmt' },
-      -- Conform can also run multiple formatters sequentially
-      -- python = { "isort", "black" },
-      --
-      -- You can use 'stop_after_first' to run the first available formatter from the list
-      -- javascript = { "prettierd", "prettier", stop_after_first = true },
+      lua = { 'stylua' },
+      go = { 'gofumpt', 'goimports' },
+      python = { 'isort', 'black' },
+      javascript = { 'prettierd', 'prettier', stop_after_first = true },
+      typescript = { 'prettierd', 'prettier', stop_after_first = true },
+      javascriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+      typescriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+      json = { 'prettierd', 'prettier', stop_after_first = true },
+      html = { 'prettierd', 'prettier', stop_after_first = true },
+      css = { 'prettierd', 'prettier', stop_after_first = true },
+      scss = { 'prettierd', 'prettier', stop_after_first = true },
+      yaml = { 'prettierd', 'prettier', stop_after_first = true },
+      markdown = { 'prettierd', 'prettier', stop_after_first = true },
+      rust = { 'rustfmt' },
+      c = { 'clang-format' },
+      cpp = { 'clang-format' },
+      java = { 'google-java-format' },
+      php = { 'php_cs_fixer' },
+      sh = { 'shfmt' },
     },
   }
+
+  -- Format on buffer leave to avoid undo issues
+  vim.api.nvim_create_autocmd('BufLeave', {
+    pattern = '*',
+    callback = function()
+      -- Only format if the buffer is valid
+      if vim.bo.buflisted and vim.bo.modifiable then
+        conform.format { async = false, lsp_format = 'fallback' }
+      end
+    end,
+  })
 
   vim.keymap.set({ 'n', 'v' }, '<leader>f', function() require('conform').format { async = true } end, { desc = '[F]ormat buffer' })
 end

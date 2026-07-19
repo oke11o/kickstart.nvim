@@ -1,6 +1,8 @@
 tags
 test.sh
 .luarc.json
+.idea/
+images/
 nvim
 
 spell/

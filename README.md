@@ -2,6 +2,10 @@
 
 ## Introduction
 
+```shell
+git clone git@github.com:oke11o/kickstart.nvim.git ~/.config/nvim
+```
+
 A starting point for Neovim that is:
 
 * Small
